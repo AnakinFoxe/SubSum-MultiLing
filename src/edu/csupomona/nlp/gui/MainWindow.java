@@ -16,10 +16,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -43,19 +41,20 @@ import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
  * @author Xing
  */
 public class MainWindow extends JFrame {
-    private ButtonGroup bgLanguage;
+    private final ButtonGroup bgLanguage;
     private JRadioButton rbZh, rbEn, rbEs;
-    private JButton btnSummarize;
-    private JButton btnClear;
-    private JButton btnExit;
-    private JButton btnChooseFile;
+    private final JButton btnSummarize;
+    private final JButton btnClear;
+    private final JButton btnExit;
+    private final JButton btnChooseFile;
     private JTextArea taWhiteboardIn;
     private JTextArea taWhiteboardOut;
-    private JScrollPane spWhiteboardIn;
-    private JScrollPane spWhiteboardOut;
-    private JLabel lblLeft;
-    private JLabel lblRight ;
+    private final JScrollPane spWhiteboardIn;
+    private final JScrollPane spWhiteboardOut;
+    private final JLabel lblLeft;
+    private final JLabel lblRight ;
     private File[] files;
+    private List<String> inputSentences;
     
     public MainWindow() {
         setVisible( true );
@@ -71,7 +70,7 @@ public class MainWindow extends JFrame {
         add( rbEn );
         add( rbEs );
     		
-        btnChooseFile = new JButton( "Choosing File" );
+        btnChooseFile = new JButton( "Browse" );
         btnChooseFile.addActionListener(
             new ActionListener()
             {
@@ -82,6 +81,18 @@ public class MainWindow extends JFrame {
                     fileChooser.setMultiSelectionEnabled( true );
                     fileChooser.showOpenDialog( null );
                     files = fileChooser.getSelectedFiles();
+                    
+                    try {
+                        // read sentences from selected files
+                        inputSentences = readFiles(files);
+                        
+                        
+                        for (String sentence : inputSentences) 
+                            taWhiteboardIn.append(sentence + "\n");
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         );
@@ -93,39 +104,24 @@ public class MainWindow extends JFrame {
                 @Override
                 public void actionPerformed( ActionEvent e ){
                     List<String> summaries = new ArrayList<>();
-                    try {
-                        if( rbZh.isSelected() ){
-                            // read sentences from selected files
-                            List<String> sentences = readFiles(files);
+                    
+                    if( rbZh.isSelected() ){
+                        // get summaries
+                        summaries.addAll(getChineseSum(inputSentences));
+                    }else if( rbEn.isSelected() ){
+                        // get summaries
+                        summaries.addAll(getEnglishSum(inputSentences));
+                    }else if( rbEs.isSelected() ){
+                        // get summaries
+                        summaries.addAll(getSpanishSum(inputSentences)); 
+                    }else
+                        JOptionPane.showMessageDialog( null, 
+                                "Please select one language to proceed" );
 
-                            // get summaries
-                            summaries.addAll(getChineseSum(sentences));
-                        }else if( rbEn.isSelected() ){
-                            // read sentences from selected files
-                            List<String> sentences = readFiles(files);
-
-                            // get summaries
-                            summaries.addAll(getEnglishSum(sentences));
-                        }else if( rbEs.isSelected() ){
-                            // read sentences from selected files
-                            List<String> sentences = readFiles(files);
-                            
-                            // get summaries
-                            summaries.addAll(getSpanishSum(sentences)); 
-                        }else
-                            JOptionPane.showMessageDialog( null, 
-                                    "Please select one language to proceed" );
-                    
-                        // append summaries to whiteboard for display
-                        taWhiteboardOut.setText("");
-                        for (String summary : summaries) 
-                            taWhiteboardOut.append(summary);
-                    
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainWindow.class.getName())
-                                .log(Level.SEVERE, null, ex);
-                    }
-                    
+                    // append summaries to whiteboard for display
+                    taWhiteboardOut.setText("");
+                    for (String summary : summaries) 
+                        taWhiteboardOut.append(summary);
                 }
             }
         );  
@@ -137,8 +133,12 @@ public class MainWindow extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent arg0) 
                 {
+                    // remove everything on both whiteboards
                     taWhiteboardOut.setText("");
                     taWhiteboardIn.setText("");
+                    
+                    // reset sentences
+                    inputSentences.clear();
                 }
             }
         );
