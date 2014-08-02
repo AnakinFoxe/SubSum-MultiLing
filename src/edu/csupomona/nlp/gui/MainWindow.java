@@ -36,25 +36,29 @@ import suk.code.SubjectiveLogic.MDS.SubSumChinese;
 import suk.code.SubjectiveLogic.MDS.SubSumGenericMDS;
 import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
 
+
 /**
  *
  * @author Xing
  */
 public class MainWindow extends JFrame {
+    // GUI 
     private final ButtonGroup bgLanguage;
     private JRadioButton rbZh, rbEn, rbEs;
     private final JButton btnSummarize;
     private final JButton btnClear;
-    private final JButton btnExit;
-    private final JButton btnChooseFile;
+    private final JButton btnBrowse;
     private JTextArea taWhiteboardIn;
     private JTextArea taWhiteboardOut;
     private final JScrollPane spWhiteboardIn;
     private final JScrollPane spWhiteboardOut;
     private final JLabel lblLeft;
-    private final JLabel lblRight ;
+    private final JLabel lblRight;
+    
+    // parameters and data
     private File[] files;
-    private List<String> inputSentences;
+    private List<String> inputText;
+    private int percentage;
     
     public MainWindow() {
         setVisible( true );
@@ -70,25 +74,27 @@ public class MainWindow extends JFrame {
         add( rbEn );
         add( rbEs );
     		
-        btnChooseFile = new JButton( "Browse" );
-        btnChooseFile.addActionListener(
+        btnBrowse = new JButton( "Browse..." );
+        btnBrowse.addActionListener(
             new ActionListener()
             {
                 @Override
                 public void actionPerformed( ActionEvent e ) {
 
-                    JFileChooser fileChooser = new JFileChooser();
-                    fileChooser.setMultiSelectionEnabled( true );
-                    fileChooser.showOpenDialog( null );
-                    files = fileChooser.getSelectedFiles();
+                    JFileChooser fc = new JFileChooser();
+                    fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                    fc.setMultiSelectionEnabled( true );
+                    fc.showOpenDialog( null );
+                    files = fc.getSelectedFiles();
                     
                     try {
-                        // read sentences from selected files
-                        inputSentences = readFiles(files);
+                        // read lines from selected files
+                        inputText = readFiles(files);
                         
-                        
-                        for (String sentence : inputSentences) 
-                            taWhiteboardIn.append(sentence + "\n");
+                        // reset whiteboard and add new lines
+                        taWhiteboardIn.setText("");
+                        for (String text : inputText) 
+                            taWhiteboardIn.append(text + "\n");
                     } catch (IOException ex) {
                         Logger.getLogger(MainWindow.class.getName())
                                 .log(Level.SEVERE, null, ex);
@@ -107,21 +113,24 @@ public class MainWindow extends JFrame {
                     
                     if( rbZh.isSelected() ){
                         // get summaries
-                        summaries.addAll(getChineseSum(inputSentences));
+                        summaries.addAll(getChineseSum(inputText));
                     }else if( rbEn.isSelected() ){
                         // get summaries
-                        summaries.addAll(getEnglishSum(inputSentences));
+                        summaries.addAll(getEnglishSum(inputText));
                     }else if( rbEs.isSelected() ){
                         // get summaries
-                        summaries.addAll(getSpanishSum(inputSentences)); 
+                        summaries.addAll(getSpanishSum(inputText)); 
                     }else
                         JOptionPane.showMessageDialog( null, 
                                 "Please select one language to proceed" );
 
                     // append summaries to whiteboard for display
                     taWhiteboardOut.setText("");
-                    for (String summary : summaries) 
-                        taWhiteboardOut.append(summary);
+                    int num = 0;
+                    for (String summary : summaries) {
+                        num++;
+                        taWhiteboardOut.append(num + ". " + summary + "\n");
+                    }
                 }
             }
         );  
@@ -138,17 +147,7 @@ public class MainWindow extends JFrame {
                     taWhiteboardIn.setText("");
                     
                     // reset sentences
-                    inputSentences.clear();
-                }
-            }
-        );
-        btnExit = new JButton( "Exit" );
-    //	add( ExitButton );
-        btnExit.addActionListener(
-            new ActionListener(){
-                @Override
-                public void actionPerformed( ActionEvent e ){
-                    System.exit( 0 );
+                    inputText.clear();
                 }
             }
         );
@@ -175,7 +174,7 @@ public class MainWindow extends JFrame {
 
         GroupLayout.ParallelGroup hpg1a = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         hpg1a.addComponent( rbZh );
-        hpg1a.addComponent( btnChooseFile );
+        hpg1a.addComponent( btnBrowse );
 
         GroupLayout.ParallelGroup hpg1b = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         hpg1b.addComponent( rbEn );
@@ -195,15 +194,16 @@ public class MainWindow extends JFrame {
 
 
         GroupLayout.ParallelGroup hpg2a = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        hpg2a.addComponent( lblRight  );
+        hpg2a.addComponent( lblRight );
 
-        GroupLayout.SequentialGroup hpg2h = layout.createSequentialGroup();
-        hpg2h.addGroup( hpg2a ).addComponent( btnExit );
+//        GroupLayout.SequentialGroup hpg2h = layout.createSequentialGroup();
+//        hpg2h.addGroup( hpg2a ).addComponent( btnExit );
 
         GroupLayout.ParallelGroup hpg2 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        hpg2.addGroup( hpg2h );
+        hpg2.addGroup( hpg2a );
         hpg2.addComponent( spWhiteboardOut );
 
+        // TODO: here comes exception
         layout.setHorizontalGroup(layout.createSequentialGroup().addGroup( hpg1 ).addGroup( hpg2 ));
 
 
@@ -214,10 +214,9 @@ public class MainWindow extends JFrame {
         vpg1.addComponent(rbEs);
 
         GroupLayout.ParallelGroup vpg2 = layout.createParallelGroup(GroupLayout.Alignment.CENTER);
-        vpg2.addComponent( btnChooseFile );
+        vpg2.addComponent( btnBrowse );
         vpg2.addComponent( btnSummarize );
         vpg2.addComponent( btnClear );
-        vpg2.addComponent( btnExit );
 
         GroupLayout.ParallelGroup vpg3 = layout.createParallelGroup(GroupLayout.Alignment.CENTER);
         vpg3.addComponent(lblLeft);
@@ -231,7 +230,7 @@ public class MainWindow extends JFrame {
         layout.setVerticalGroup(layout.createSequentialGroup().addGroup(vpg1).addGroup(vpg2).addGroup(vpg3).addGroup(vpg4));
 
         layout.linkSize(SwingConstants.HORIZONTAL,new Component[] { spWhiteboardIn, spWhiteboardOut });
-        layout.linkSize(SwingConstants.HORIZONTAL,new Component[] { btnChooseFile, btnSummarize, btnClear, btnExit });
+        layout.linkSize(SwingConstants.HORIZONTAL,new Component[] { btnBrowse, btnSummarize, btnClear });
 
         setPreferredSize( new Dimension(730, 700) );
         pack();
@@ -255,28 +254,25 @@ public class MainWindow extends JFrame {
         return sentences;
     }
     
-    private List<String> getChineseSum(List<String> sentences) {
-        SubSumChinese ssc = new SubSumChinese(sentences, 
-                "./data/stopwords/zh_CN.txt", 10);
+    private List<String> getChineseSum(List<String> texts) {
+        SubSumChinese ssc = new SubSumChinese(texts, 10);
         
         ssc.assignScoreToSentences();
         
        return ssc.getCandidateSentences();
     }
     
-    private List<String> getEnglishSum(List<String> sentences) {
-        SubSumGenericMDS ssgm = new SubSumGenericMDS(sentences, 
-                "./data/stopwords/en.txt", 10);
+    private List<String> getEnglishSum(List<String> texts) {
+        SubSumGenericMDS ssgm = new SubSumGenericMDS(texts, 10);
         
         ssgm.assignScoreToSentences();
         
        return ssgm.getCandidateSentences();
     }
     
-    private List<String> getSpanishSum(List<String> sentences) {
-        SubSumSpanish sss = new SubSumSpanish(sentences, 
-                "./data/stopwords/en.txt", 10);
-        
+    private List<String> getSpanishSum(List<String> texts) {
+        SubSumSpanish sss = new SubSumSpanish(texts, 10);
+    
         sss.assignScoreToSentences();
         
        return sss.getCandidateSentences();

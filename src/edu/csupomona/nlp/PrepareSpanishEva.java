@@ -33,8 +33,7 @@ public class PrepareSpanishEva extends PrepareEnglishEva {
                 
                 // generate summaries
                 SubSumSpanish sss = 
-                        new SubSumSpanish(folder.getCanonicalPath(), 
-                                "./data/stopwords/es.txt", 30);
+                        new SubSumSpanish(folder.getCanonicalPath(), 30);
                 sss.assignScoreToSentences();
                 List<String> results = sss.getCandidateSentences();
                 

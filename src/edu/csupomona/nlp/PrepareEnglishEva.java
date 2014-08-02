@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import suk.code.SubjectiveLogic.MDS.SubSumGenericMDS;
 
+
 /**
  *
  * @author Xing
@@ -362,8 +363,7 @@ public class PrepareEnglishEva {
                 long elapsed = System.currentTimeMillis();
                 // generate summaries
                 SubSumGenericMDS ssg = 
-                        new SubSumGenericMDS(folder.getCanonicalPath(), 
-                                "./data/stopwords/en.txt", 30);
+                        new SubSumGenericMDS(folder.getCanonicalPath(), 30);
                 ssg.assignScoreToSentences();
                 List<String> results = ssg.getCandidateSentences();
                 

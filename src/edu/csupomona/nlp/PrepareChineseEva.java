@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import suk.code.SubjectiveLogic.MDS.SubSumChinese;
 
+
 /**
  *
  * @author Xing
@@ -32,8 +33,7 @@ public class PrepareChineseEva extends PrepareEnglishEva {
                 
                 // generate summaries
                 SubSumChinese ssc = 
-                        new SubSumChinese(folder.getCanonicalPath(), 
-                                "./data/stopwords/stopwords_zh.txt", 30);
+                        new SubSumChinese(folder.getCanonicalPath(), 30);
                 ssc.assignScoreToSentences();
                 List<String> results = ssc.getCandidateSentences();
                 
