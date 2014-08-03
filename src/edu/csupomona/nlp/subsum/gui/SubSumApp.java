@@ -30,6 +30,8 @@ public final class SubSumApp extends Application {
     public void start(Stage stage) {
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
+        stage.setTitle("SubSum with multilingual support");
+        
         Parent root = new MainPane(stage);
         Scene scene = new Scene(root);
         stage.setScene(scene);

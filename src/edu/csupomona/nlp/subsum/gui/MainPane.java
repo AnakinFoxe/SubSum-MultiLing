@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -90,6 +90,8 @@ public final class MainPane extends GridPane {
                                 .log(Level.SEVERE, null, ex);
                     }
         });
+        Tooltip ttBtnBrowse =  new Tooltip("Select files to be processed");
+        btnBrowse.setTooltip(ttBtnBrowse);
         
         // language list
         ObservableList<String> supportLanguages = 
@@ -100,6 +102,9 @@ public final class MainPane extends GridPane {
                 );
         final ComboBox cbLanguage = new ComboBox(supportLanguages);
         cbLanguage.setPrefWidth(110);
+        Tooltip ttCbLanguage = new Tooltip("Select language of the input text");
+        cbLanguage.setTooltip(ttCbLanguage);
+        
         
         // percentage slider & percentage textfield
         final Slider sldPercentage = new Slider(10, 90, 30); // min, max, default
@@ -109,6 +114,9 @@ public final class MainPane extends GridPane {
         sldPercentage.setBlockIncrement(10);
         sldPercentage.setSnapToTicks(true);
         sldPercentage.setPrefWidth(300);
+        Tooltip ttSldPercentage = new Tooltip("Percentage for summarization");
+        sldPercentage.setTooltip(ttSldPercentage);
+        
         final Label lblPercentageValue = new Label();
         lblPercentageValue.setText(String.format("%3.0f", sldPercentage.getValue()));
         lblPercentageValue.setPrefWidth(50);
@@ -118,6 +126,8 @@ public final class MainPane extends GridPane {
             lblPercentageValue.setText(String.format("%3.0f", newValue));
             percentage_ = newValue.intValue();
         });
+        Tooltip ttLblPercentageValue = new Tooltip("percentage");
+        lblPercentageValue.setTooltip(ttLblPercentageValue);
         
         
         // reset button
@@ -130,6 +140,8 @@ public final class MainPane extends GridPane {
                     taRight_.setText("");
                 }
         );
+        Tooltip ttBtnReset = new Tooltip("Reset all the input and output");
+        btnReset.setTooltip(ttBtnReset);
         
         // summarize button
         final Button btnSummarize = new Button("Summarize");
@@ -171,6 +183,8 @@ public final class MainPane extends GridPane {
                     }
                 }
         );
+        Tooltip ttBtnSummarize = new Tooltip("Start summarization");
+        btnSummarize.setTooltip(ttBtnSummarize);
         
         // toolbar
         final ToolBar tbTop = new ToolBar(btnBrowse,
@@ -188,7 +202,9 @@ public final class MainPane extends GridPane {
         taLeft_.prefWidth(prefWidth);
         taLeft_.prefHeight(prefHeight);
         taLeft_.setWrapText(true);
-        
+        Tooltip ttTaLeft = new Tooltip("Text loaded from files will be displayed. "
+                + "You may also copy and paste the text at here.");
+        taLeft_.setTooltip(ttTaLeft);
         
         final ScrollPane spLeft = new ScrollPane();
         spLeft.setContent(taLeft_);
@@ -205,6 +221,8 @@ public final class MainPane extends GridPane {
         taRight_.prefHeight(prefHeight);
         taRight_.setWrapText(true);
         taRight_.setEditable(false);    // read-only
+        Tooltip ttTaRight = new Tooltip("Summaries will be displayed at here");
+        taRight_.setTooltip(ttTaRight);
         
         
         final ScrollPane spRight = new ScrollPane();
