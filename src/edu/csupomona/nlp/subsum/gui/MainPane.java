@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +23,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
@@ -43,10 +45,11 @@ import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
  */
 public final class MainPane extends GridPane {
     
-    private List<String> inputTexts;
+    private List<String> inputTexts_;
+    private int percentage_ = 10;
     
-    private final TextArea taLeft = new TextArea();
-    private final TextArea taRight = new TextArea();
+    private final TextArea taLeft_ = new TextArea();
+    private final TextArea taRight_ = new TextArea();
     
     public MainPane() {
         
@@ -76,10 +79,10 @@ public final class MainPane extends GridPane {
                     
                     try {
                         // read files
-                        inputTexts = readFiles(files);
+                        inputTexts_ = readFiles(files);
                         
-                        inputTexts.stream().forEach((text) -> {
-                            taLeft.appendText(text + "\n");
+                        inputTexts_.stream().forEach((text) -> {
+                            taLeft_.appendText(text + "\n");
                         });
                     } catch (IOException ex) {
                         Logger.getLogger(MainPane.class.getName())
@@ -96,27 +99,37 @@ public final class MainPane extends GridPane {
                 );
         final ComboBox cbLanguage = new ComboBox(supportLanguages);
         
-        // percentage slider
-        final Slider sldPercentage = new Slider();
-        sldPercentage.setMin(0);
-        sldPercentage.setMax(100);
-        sldPercentage.setValue(10); // default
-        sldPercentage.setShowTickLabels(true);
+        // percentage slider & percentage textfield
+        final Slider sldPercentage = new Slider(0, 100, 10); // min, max, default
+//        sldPercentage.setShowTickLabels(true);
         sldPercentage.setShowTickMarks(true);
         sldPercentage.setMajorTickUnit(50);
-        sldPercentage.setMinorTickCount(5);
+        sldPercentage.setMinorTickCount(4);
         sldPercentage.setBlockIncrement(10);
+        sldPercentage.setSnapToTicks(true);
+        sldPercentage.setPrefWidth(300);
+        
+        final Label lblPercentageValue = new Label();
+        lblPercentageValue.setText(String.format("%3.0f", sldPercentage.getValue()));
+        lblPercentageValue.setPrefWidth(50);
+        sldPercentage.valueProperty().addListener(
+                (ObservableValue<? extends Number> observable, 
+                        Number oldValue, Number newValue) -> {
+            lblPercentageValue.setText(String.format("%3.0f", newValue));
+            percentage_ = newValue.intValue();
+        });
+        
         
         // reset button
         final Button btnReset = new Button("Reset");
         btnReset.setOnAction(
                 (ActionEvent t) -> {
                     // remove everything on both text areas
-                    taLeft.setText("");
-                    taRight.setText("");
+                    taLeft_.setText("");
+                    taRight_.setText("");
                     
                     // reset input texts
-                    inputTexts.clear();
+                    inputTexts_.clear();
                 }
         );
         
@@ -127,13 +140,13 @@ public final class MainPane extends GridPane {
                     List<String> summaries = new ArrayList<>();
                     
                     String language = cbLanguage.getValue().toString();
-                    if (language.equals("Chinese")) {
-                        summaries.addAll(getChineseSum(inputTexts));
-                    } else if (language.equals("Spanish")) {
-                        summaries.addAll(getSpanishSum(inputTexts)); 
-                    } else if (language.equals("English")){
-                        summaries.addAll(getEnglishSum(inputTexts));
-                    } else {
+                    if (language.equals("Chinese"))
+                        summaries.addAll(getChineseSum(inputTexts_, percentage_));
+                    else if (language.equals("Spanish"))
+                        summaries.addAll(getSpanishSum(inputTexts_, percentage_)); 
+                    else if (language.equals("English"))
+                        summaries.addAll(getEnglishSum(inputTexts_, percentage_));
+                    else {
                         Stage dialog = new Stage();
                         dialog.initStyle(StageStyle.UTILITY);
                         Scene scene = new Scene(new Group(new Text(25, 25, "Please select one language to proceed.")));
@@ -142,11 +155,11 @@ public final class MainPane extends GridPane {
                     }
                     
                     // append summaries to right text area for display
-                    taRight.setText("");
+                    taRight_.setText("");
                     int num = 0;
                     for (String summary : summaries) {
                         ++num;
-                        taRight.appendText(num + ". " + summary + "\n");
+                        taRight_.appendText(num + ". " + summary + "\n");
                     }
                 }
         );
@@ -155,6 +168,7 @@ public final class MainPane extends GridPane {
         final ToolBar tbTop = new ToolBar(btnBrowse,
                                     cbLanguage,
                                     sldPercentage,
+                                    lblPercentageValue,
                                     btnReset,
                                     btnSummarize);
         GridPane.setConstraints(tbTop, 0, 0, 2, 1);
@@ -164,13 +178,13 @@ public final class MainPane extends GridPane {
         int prefHeight = 600;
         // left pane for input or display input
 //        taLeft = new TextArea();
-        taLeft.prefWidth(prefWidth);
-        taLeft.prefHeight(prefHeight);
-        taLeft.setWrapText(true);
+        taLeft_.prefWidth(prefWidth);
+        taLeft_.prefHeight(prefHeight);
+        taLeft_.setWrapText(true);
         
         
         final ScrollPane spLeft = new ScrollPane();
-        spLeft.setContent(taLeft);
+        spLeft.setContent(taLeft_);
         spLeft.setFitToHeight(true);
         spLeft.setFitToWidth(true);
         spLeft.setPrefWidth(prefWidth);
@@ -181,13 +195,13 @@ public final class MainPane extends GridPane {
         
         // right pane for display output
 //        taRight = new TextArea();
-        taRight.prefWidth(prefWidth);
-        taRight.prefHeight(prefHeight);
-        taRight.setWrapText(true);
+        taRight_.prefWidth(prefWidth);
+        taRight_.prefHeight(prefHeight);
+        taRight_.setWrapText(true);
         
         
         final ScrollPane spRight = new ScrollPane();
-        spRight.setContent(taRight);
+        spRight.setContent(taRight_);
         spRight.setFitToHeight(true);
         spRight.setFitToWidth(true);
         spRight.setPrefWidth(prefWidth);
@@ -215,24 +229,24 @@ public final class MainPane extends GridPane {
         return lines;
     }
     
-    private List<String> getChineseSum(List<String> texts) {
-        SubSumChinese ssc = new SubSumChinese(texts, 10);
+    private List<String> getChineseSum(List<String> texts, int percentage) {
+        SubSumChinese ssc = new SubSumChinese(texts, percentage);
         
         ssc.assignScoreToSentences();
         
        return ssc.getCandidateSentences();
     }
     
-    private List<String> getEnglishSum(List<String> texts) {
-        SubSumGenericMDS ssgm = new SubSumGenericMDS(texts, 10);
+    private List<String> getEnglishSum(List<String> texts, int percentage) {
+        SubSumGenericMDS ssgm = new SubSumGenericMDS(texts, percentage);
         
         ssgm.assignScoreToSentences();
         
        return ssgm.getCandidateSentences();
     }
     
-    private List<String> getSpanishSum(List<String> texts) {
-        SubSumSpanish sss = new SubSumSpanish(texts, 10);
+    private List<String> getSpanishSum(List<String> texts, int percentage) {
+        SubSumSpanish sss = new SubSumSpanish(texts, percentage);
     
         sss.assignScoreToSentences();
         
