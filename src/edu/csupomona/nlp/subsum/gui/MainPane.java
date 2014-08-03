@@ -28,6 +28,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -61,7 +62,7 @@ public final class MainPane extends GridPane {
         RowConstraints rcTop = new RowConstraints();
         rcTop.setMinHeight(40);     // this min value is probably to small
         RowConstraints rcRest = new RowConstraints();
-        rcRest.setPercentHeight(95);    // only way to fill the height...
+        rcRest.setVgrow(Priority.ALWAYS);   // finally found a way to expand
         getRowConstraints().setAll(rcTop, rcRest);
         
         // browsing button
@@ -99,7 +100,7 @@ public final class MainPane extends GridPane {
         cbLanguage.setPrefWidth(110);
         
         // percentage slider & percentage textfield
-        final Slider sldPercentage = new Slider(0, 100, 10); // min, max, default
+        final Slider sldPercentage = new Slider(10, 90, 30); // min, max, default
         sldPercentage.setShowTickMarks(true);
         sldPercentage.setMajorTickUnit(50);
         sldPercentage.setMinorTickCount(4);
