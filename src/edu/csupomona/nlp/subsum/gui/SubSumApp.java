@@ -9,8 +9,6 @@ package edu.csupomona.nlp.subsum.gui;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -32,7 +30,7 @@ public final class SubSumApp extends Application {
     public void start(Stage stage) {
         setUserAgentStylesheet(STYLESHEET_MODENA);
         
-        Parent root = new MainPane();
+        Parent root = new MainPane(stage);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);

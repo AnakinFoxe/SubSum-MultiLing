@@ -19,8 +19,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,10 +29,9 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import org.controlsfx.dialog.Dialogs;
 import suk.code.SubjectiveLogic.MDS.SubSumChinese;
 import suk.code.SubjectiveLogic.MDS.SubSumGenericMDS;
 import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
@@ -51,7 +48,7 @@ public final class MainPane extends GridPane {
     private final TextArea taLeft_ = new TextArea();
     private final TextArea taRight_ = new TextArea();
     
-    public MainPane() {
+    public MainPane(Stage stage) {
         
         
         // column and row definition
@@ -139,19 +136,21 @@ public final class MainPane extends GridPane {
                 (ActionEvent t) -> {
                     List<String> summaries = new ArrayList<>();
                     
-                    String language = cbLanguage.getValue().toString();
-                    if (language.equals("Chinese"))
-                        summaries.addAll(getChineseSum(inputTexts_, percentage_));
-                    else if (language.equals("Spanish"))
-                        summaries.addAll(getSpanishSum(inputTexts_, percentage_)); 
-                    else if (language.equals("English"))
-                        summaries.addAll(getEnglishSum(inputTexts_, percentage_));
-                    else {
-                        Stage dialog = new Stage();
-                        dialog.initStyle(StageStyle.UTILITY);
-                        Scene scene = new Scene(new Group(new Text(25, 25, "Please select one language to proceed.")));
-                        dialog.setScene(scene);
-                        dialog.show();
+                    try {
+                        String language = cbLanguage.getValue().toString();
+                        if (language.equals("Chinese"))
+                            summaries.addAll(getChineseSum(inputTexts_, percentage_));
+                        else if (language.equals("Spanish"))
+                            summaries.addAll(getSpanishSum(inputTexts_, percentage_)); 
+                        else if (language.equals("English"))
+                            summaries.addAll(getEnglishSum(inputTexts_, percentage_));
+                    } catch (NullPointerException e) {
+                        // using ControlsFX to create error dialog
+                        Dialogs.create()
+                                .owner(stage)
+                                .title("Oops!")
+                                .masthead("Please select a language to proceed.")
+                                .showError();
                     }
                     
                     // append summaries to right text area for display
