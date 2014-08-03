@@ -29,9 +29,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import suk.code.SubjectiveLogic.MDS.SubSumChinese;
 import suk.code.SubjectiveLogic.MDS.SubSumGenericMDS;
 import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
@@ -54,6 +57,7 @@ public class MainWindow extends JFrame {
     private final JScrollPane spWhiteboardOut;
     private final JLabel lblLeft;
     private final JLabel lblRight;
+    private final JSlider sldPercentage;
     
     // parameters and data
     private File[] files;
@@ -151,6 +155,29 @@ public class MainWindow extends JFrame {
                 }
             }
         );
+        
+        // slider for setting percentage
+        sldPercentage = new JSlider(0, 100, 10);
+        
+        sldPercentage.setMajorTickSpacing(10);
+        sldPercentage.setMinorTickSpacing(1);
+        sldPercentage.setPaintTicks(true);
+        sldPercentage.setPaintLabels(true);
+//        sldPercentage.setBorder(
+//                BorderFactory.createEmptyBorder(0,0,10,0));
+//        Font font = new Font("Serif", Font.ITALIC, 15);
+//        sldPercentage.setFont(font);
+        
+        sldPercentage.addChangeListener(
+            new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    JSlider source = (JSlider)e.getSource();
+                    if (!source.getValueIsAdjusting()) 
+                        percentage = source.getValue();
+                }
+            }
+        );
     		
     		
         lblLeft = new JLabel( "Or paste article below: " );
@@ -184,27 +211,22 @@ public class MainWindow extends JFrame {
         hpg1c.addComponent( rbEs );	
         hpg1c.addComponent( btnClear );
 
-        GroupLayout.SequentialGroup hpg1h = layout.createSequentialGroup();
-        hpg1h.addGroup( hpg1a ).addGroup( hpg1b ).addGroup( hpg1c );
+        GroupLayout.SequentialGroup hpg1 = layout.createSequentialGroup();
+        hpg1.addGroup( hpg1a ).addGroup( hpg1b ).addGroup( hpg1c );
+    
 
-        GroupLayout.ParallelGroup hpg1 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        hpg1.addGroup( hpg1h );
-        hpg1.addComponent( lblLeft );
-        hpg1.addComponent( spWhiteboardIn );
+        GroupLayout.ParallelGroup glLeft = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        glLeft.addGroup( hpg1 );
+        glLeft.addComponent( lblLeft );
+        glLeft.addComponent( spWhiteboardIn );
 
-
-        GroupLayout.ParallelGroup hpg2a = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        hpg2a.addComponent( lblRight );
-
-//        GroupLayout.SequentialGroup hpg2h = layout.createSequentialGroup();
-//        hpg2h.addGroup( hpg2a ).addComponent( btnExit );
-
-        GroupLayout.ParallelGroup hpg2 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        hpg2.addGroup( hpg2a );
-        hpg2.addComponent( spWhiteboardOut );
+        GroupLayout.ParallelGroup glRight = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+//        glRight.addGroup(layout.createSequentialGroup().addComponent(sldPercentage));
+        glRight.addComponent( lblRight );
+        glRight.addComponent( spWhiteboardOut );
 
         // TODO: here comes exception
-        layout.setHorizontalGroup(layout.createSequentialGroup().addGroup( hpg1 ).addGroup( hpg2 ));
+        layout.setHorizontalGroup(layout.createSequentialGroup().addGroup( glLeft ).addGroup( glRight ));
 
 
 
