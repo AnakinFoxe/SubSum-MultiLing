@@ -66,6 +66,7 @@ public final class MainPane extends GridPane {
         
         // browsing button
         final Button btnBrowse = new Button("Select files...");
+        btnBrowse.setPrefWidth(110);
         btnBrowse.setOnAction(
                 (ActionEvent t) -> {
                     FileChooser fc = new FileChooser();
@@ -77,6 +78,7 @@ public final class MainPane extends GridPane {
                         // read files
                         List<String> inputTexts = readFiles(files);
                         
+                        taLeft_.setText("");
                         inputTexts.stream().forEach((text) -> {
                             taLeft_.appendText(text + "\n");
                         });
@@ -94,6 +96,7 @@ public final class MainPane extends GridPane {
                     "Spanish"
                 );
         final ComboBox cbLanguage = new ComboBox(supportLanguages);
+        cbLanguage.setPrefWidth(110);
         
         // percentage slider & percentage textfield
         final Slider sldPercentage = new Slider(0, 100, 10); // min, max, default
@@ -116,6 +119,7 @@ public final class MainPane extends GridPane {
         
         // reset button
         final Button btnReset = new Button("Reset");
+        btnReset.setPrefWidth(60);
         btnReset.setOnAction(
                 (ActionEvent t) -> {
                     // remove everything on both text areas
@@ -126,6 +130,7 @@ public final class MainPane extends GridPane {
         
         // summarize button
         final Button btnSummarize = new Button("Summarize");
+        btnSummarize.setPrefWidth(150);
         btnSummarize.setOnAction(
                 (ActionEvent t) -> {
                     List<String> summaries = new ArrayList<>();
@@ -134,30 +139,32 @@ public final class MainPane extends GridPane {
                     List<String> inputTexts = new ArrayList<>();
                     inputTexts.add(taLeft_.getText());
                     
-                    try {
-                        // get summaries from SubSum-Core program
-                        String language = cbLanguage.getValue().toString();
-                        if (language.equals("Chinese"))
-                            summaries.addAll(getChineseSum(inputTexts, percentage_));
-                        else if (language.equals("Spanish"))
-                            summaries.addAll(getSpanishSum(inputTexts, percentage_)); 
-                        else if (language.equals("English"))
-                            summaries.addAll(getEnglishSum(inputTexts, percentage_));
-                    } catch (NullPointerException e) {
-                        // using ControlsFX to create error dialog
-                        Dialogs.create()
-                                .owner(stage)
-                                .title("Oops!")
-                                .masthead("Please select a language to proceed.")
-                                .showError();
-                    }
-                    
-                    // append summaries to right text area for display
-                    taRight_.setText("");
-                    int num = 0;
-                    for (String summary : summaries) {
-                        ++num;
-                        taRight_.appendText(num + ". " + summary + "\n");
+                    if (taLeft_.getText().trim().length() > 1) {
+                        if (cbLanguage.getValue() != null) {
+                            // get summaries from SubSum-Core program
+                            String language = cbLanguage.getValue().toString();
+                            if (language.equals("Chinese"))
+                                summaries.addAll(getChineseSum(inputTexts, percentage_));
+                            else if (language.equals("Spanish"))
+                                summaries.addAll(getSpanishSum(inputTexts, percentage_)); 
+                            else if (language.equals("English"))
+                                summaries.addAll(getEnglishSum(inputTexts, percentage_));
+                        } else {
+                            // using ControlsFX to create error dialog
+                            Dialogs.create()
+                                    .owner(stage)
+                                    .title("Oops!")
+                                    .masthead("Please select a language to proceed.")
+                                    .showError();
+                        }
+
+                        // append summaries to right text area for display
+                        taRight_.setText("");
+                        int num = 0;
+                        for (String summary : summaries) {
+                            ++num;
+                            taRight_.appendText(num + ". " + summary.trim() + "\n");
+                        }
                     }
                 }
         );
