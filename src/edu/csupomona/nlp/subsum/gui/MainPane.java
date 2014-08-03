@@ -42,7 +42,6 @@ import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
  */
 public final class MainPane extends GridPane {
     
-    private List<String> inputTexts_;
     private int percentage_ = 10;
     
     private final TextArea taLeft_ = new TextArea();
@@ -76,9 +75,9 @@ public final class MainPane extends GridPane {
                     
                     try {
                         // read files
-                        inputTexts_ = readFiles(files);
+                        List<String> inputTexts = readFiles(files);
                         
-                        inputTexts_.stream().forEach((text) -> {
+                        inputTexts.stream().forEach((text) -> {
                             taLeft_.appendText(text + "\n");
                         });
                     } catch (IOException ex) {
@@ -98,14 +97,12 @@ public final class MainPane extends GridPane {
         
         // percentage slider & percentage textfield
         final Slider sldPercentage = new Slider(0, 100, 10); // min, max, default
-//        sldPercentage.setShowTickLabels(true);
         sldPercentage.setShowTickMarks(true);
         sldPercentage.setMajorTickUnit(50);
         sldPercentage.setMinorTickCount(4);
         sldPercentage.setBlockIncrement(10);
         sldPercentage.setSnapToTicks(true);
         sldPercentage.setPrefWidth(300);
-        
         final Label lblPercentageValue = new Label();
         lblPercentageValue.setText(String.format("%3.0f", sldPercentage.getValue()));
         lblPercentageValue.setPrefWidth(50);
@@ -124,9 +121,6 @@ public final class MainPane extends GridPane {
                     // remove everything on both text areas
                     taLeft_.setText("");
                     taRight_.setText("");
-                    
-                    // reset input texts
-                    inputTexts_.clear();
                 }
         );
         
@@ -136,14 +130,19 @@ public final class MainPane extends GridPane {
                 (ActionEvent t) -> {
                     List<String> summaries = new ArrayList<>();
                     
+                    // read from left text area
+                    List<String> inputTexts = new ArrayList<>();
+                    inputTexts.add(taLeft_.getText());
+                    
                     try {
+                        // get summaries from SubSum-Core program
                         String language = cbLanguage.getValue().toString();
                         if (language.equals("Chinese"))
-                            summaries.addAll(getChineseSum(inputTexts_, percentage_));
+                            summaries.addAll(getChineseSum(inputTexts, percentage_));
                         else if (language.equals("Spanish"))
-                            summaries.addAll(getSpanishSum(inputTexts_, percentage_)); 
+                            summaries.addAll(getSpanishSum(inputTexts, percentage_)); 
                         else if (language.equals("English"))
-                            summaries.addAll(getEnglishSum(inputTexts_, percentage_));
+                            summaries.addAll(getEnglishSum(inputTexts, percentage_));
                     } catch (NullPointerException e) {
                         // using ControlsFX to create error dialog
                         Dialogs.create()
