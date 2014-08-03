@@ -177,7 +177,6 @@ public final class MainPane extends GridPane {
         int prefWidth = 400;
         int prefHeight = 600;
         // left pane for input or display input
-//        taLeft = new TextArea();
         taLeft_.prefWidth(prefWidth);
         taLeft_.prefHeight(prefHeight);
         taLeft_.setWrapText(true);
@@ -194,10 +193,10 @@ public final class MainPane extends GridPane {
         
         
         // right pane for display output
-//        taRight = new TextArea();
         taRight_.prefWidth(prefWidth);
         taRight_.prefHeight(prefHeight);
         taRight_.setWrapText(true);
+        taRight_.setEditable(false);    // read-only
         
         
         final ScrollPane spRight = new ScrollPane();
