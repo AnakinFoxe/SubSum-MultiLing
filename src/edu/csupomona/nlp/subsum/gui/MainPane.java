@@ -40,7 +40,7 @@ import suk.code.SubjectiveLogic.MDS.SubSumGenericMDS;
 import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
 
 /**
- *
+ * Main Pane of SubSum App
  * @author Xing
  */
 public final class MainPane extends GridPane {
@@ -238,6 +238,13 @@ public final class MainPane extends GridPane {
         
     }
     
+    /**
+     * Read files and put each line of the file into a list
+     * @param files         Files to be read
+     * @return              List of lines from the files
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     private List<String> readFiles(List<File> files) 
             throws FileNotFoundException, IOException {
         List<String> lines = new ArrayList<>();
@@ -254,6 +261,12 @@ public final class MainPane extends GridPane {
         return lines;
     }
     
+    /**
+     * Get Chinese summaries
+     * @param texts         Input text
+     * @param percentage    Percentage of the original text
+     * @return 
+     */
     private List<String> getChineseSum(List<String> texts, int percentage) {
         SubSumChinese ssc = new SubSumChinese(texts, percentage);
         
@@ -262,6 +275,12 @@ public final class MainPane extends GridPane {
        return ssc.getCandidateSentences();
     }
     
+    /**
+     * Get English summaries
+     * @param texts         Input text
+     * @param percentage    Percentage of the original text
+     * @return 
+     */
     private List<String> getEnglishSum(List<String> texts, int percentage) {
         SubSumGenericMDS ssgm = new SubSumGenericMDS(texts, percentage);
         
@@ -270,6 +289,12 @@ public final class MainPane extends GridPane {
        return ssgm.getCandidateSentences();
     }
     
+    /**
+     * Get Spanish summaries
+     * @param texts         Input text
+     * @param percentage    Percentage of the original text
+     * @return 
+     */
     private List<String> getSpanishSum(List<String> texts, int percentage) {
         SubSumSpanish sss = new SubSumSpanish(texts, percentage);
     
