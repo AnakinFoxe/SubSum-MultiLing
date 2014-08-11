@@ -50,6 +50,10 @@ public final class MainPane extends GridPane {
     private final TextArea taLeft_ = new TextArea();
     private final TextArea taRight_ = new TextArea();
     
+    /**
+     * Constructor for Main Pane
+     * @param stage     Current stage
+     */
     public MainPane(Stage stage) {
         
         
