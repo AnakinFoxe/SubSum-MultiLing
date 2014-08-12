@@ -81,18 +81,19 @@ public final class MainPane extends GridPane {
                             System.getProperty("user.dir")));
                     List<File> files = fc.showOpenMultipleDialog(null);
                     
-                    try {
-                        // read files
-                        List<String> inputTexts = readFiles(files);
+                    if (files != null)
+                        try {
+                            // read files
+                            List<String> inputTexts = readFiles(files);
 
-                        taLeft_.setText("");
-                        inputTexts.stream().forEach((text) -> {
-                            taLeft_.appendText(text + "\n");
-                        });
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainPane.class.getName())
-                                .log(Level.SEVERE, null, ex);
-                    }
+                            taLeft_.setText("");
+                            inputTexts.stream().forEach((text) -> {
+                                taLeft_.appendText(text + "\n");
+                            });
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainPane.class.getName())
+                                    .log(Level.SEVERE, null, ex);
+                        }
         });
         Tooltip ttBtnBrowse =  new Tooltip("Select files to be processed");
         btnBrowse.setTooltip(ttBtnBrowse);
