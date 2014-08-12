@@ -17,3 +17,5 @@ hs_err_pid*
 /data/
 /build/
 /dist/
+/nb-configuration.xml
+/nbactions.xml
