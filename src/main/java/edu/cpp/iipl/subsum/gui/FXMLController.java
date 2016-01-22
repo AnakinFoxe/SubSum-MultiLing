@@ -1,4 +1,4 @@
-package edu.csupomona.nlp.subsum.gui;
+package edu.cpp.iipl.subsum.gui;
 
 import java.net.URL;
 import java.util.ResourceBundle;

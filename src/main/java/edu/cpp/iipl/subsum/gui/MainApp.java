@@ -1,4 +1,4 @@
-package edu.csupomona.nlp.subsum.gui;
+package edu.cpp.iipl.subsum.gui;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;

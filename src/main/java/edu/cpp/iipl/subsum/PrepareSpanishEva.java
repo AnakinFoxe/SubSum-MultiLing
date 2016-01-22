@@ -4,21 +4,21 @@
  * and open the template in the editor.
  */
 
-package edu.csupomona.nlp.subsum;
+package edu.cpp.iipl.subsum;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import suk.code.SubjectiveLogic.MDS.SubSumChinese;
-
+import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
 
 /**
  *
  * @author Xing
  */
-public class PrepareChineseEva extends PrepareEnglishEva {
+public class PrepareSpanishEva extends PrepareEnglishEva {
+    
     
     @Override
     public void prepSubSum(String srcPath, String dstPath) 
@@ -32,10 +32,10 @@ public class PrepareChineseEva extends PrepareEnglishEva {
                 long elapsed = System.currentTimeMillis();
                 
                 // generate summaries
-                SubSumChinese ssc = 
-                        new SubSumChinese(folder.getCanonicalPath(), 30);
-                ssc.assignScoreToSentences();
-                List<String> results = ssc.getCandidateSentences();
+                SubSumSpanish sss = 
+                        new SubSumSpanish(folder.getCanonicalPath(), 30);
+                sss.assignScoreToSentences();
+                List<String> results = sss.getCandidateSentences();
                 
                 if (getCharCount(results) < 100)
                     System.out.println("Result may not meet limit: " 
@@ -66,17 +66,17 @@ public class PrepareChineseEva extends PrepareEnglishEva {
     
     
     public static void main(String[] args) throws IOException {
-        PrepareChineseEva prep = new PrepareChineseEva();
+        PrepareSpanishEva prep = new PrepareSpanishEva();
         
-        prep.prepFolders("./data/translated/chinese/task5/t5/docs/");
+        prep.prepFolders("./data/translated/spanish/task5/t5/docs/");
         
-        prep.prepEvalFiles("./data/translated/chinese/eval/peers/5/", 
-                "./data/evaluation/chinese/");
+        prep.prepEvalFiles("./data/translated/spanish/eval/peers/5/", 
+                "./data/evaluation/spanish/");
         
-        prep.prepSource("./data/translated/chinese/task5/t5/docs/", 
-                "./data/evaluation/chinese/source/");
+        prep.prepSource("./data/translated/spanish/task5/t5/docs/", 
+                "./data/evaluation/spanish/source/");
         
-        prep.prepSubSum("./data/evaluation/chinese/source/", 
-                "./data/evaluation/chinese/SubSum/");
+        prep.prepSubSum("./data/evaluation/spanish/source/", 
+                "./data/evaluation/spanish/SubSum/");
     }
 }

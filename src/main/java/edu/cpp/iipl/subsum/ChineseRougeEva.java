@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package edu.csupomona.nlp.subsum;
+package edu.cpp.iipl.subsum;
 
+import edu.csupomona.nlp.tool.rouge.ChineseROUGE;
 import edu.csupomona.nlp.tool.rouge.Result;
-import edu.csupomona.nlp.tool.rouge.SpanishROUGE;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,23 +18,23 @@ import java.util.HashMap;
  *
  * @author Xing
  */
-public class SpanishRougeEva {
+public class ChineseRougeEva {
     
     public static void main(String[] args) throws IOException {
-        SpanishROUGE rouge = new SpanishROUGE();
+        ChineseROUGE rouge = new ChineseROUGE();
         rouge.setAlpha(0.5);
-//        rouge.setRmStopword(true);
-//        rouge.setUseStemmer(true);
+        rouge.setRmStopword(true);
+        rouge.setUseStemmer(true);
         
         
-        String peerPath = "./data/evaluation/spanish/peer.M.100/";
-        String baselinePath = "./data/evaluation/spanish/baseline.M.100/";
-        String modelPath = "./data/evaluation/spanish/model.M.100/";
-        String subSumPath = "./data/evaluation/spanish/SubSum/";
+        String peerPath = "./data/evaluation/chinese/peer.M.100/";
+        String baselinePath = "./data/evaluation/chinese/baseline.M.100/";
+        String modelPath = "./data/evaluation/chinese/model.M.100/";
+        String subSumPath = "./data/evaluation/chinese/SubSum/";
 
         HashMap<String, String> docSetRet = new HashMap<>();
         
-        FileWriter fwSum = new FileWriter("./data/evaluation/spanish/rouge_1_sum.csv", false);
+        FileWriter fwSum = new FileWriter("./data/evaluation/chinese/rouge_1_ss_sum.csv", false);
         BufferedWriter bwSum = new BufferedWriter(fwSum);
         
         File[] peers = new File(peerPath).listFiles();
@@ -191,11 +191,10 @@ public class SpanishRougeEva {
                     + sumRet[2]/docSetFolders.length + ", \n");
         bwSum.close();
         
-        FileWriter fw = new FileWriter("./data/evaluation/spanish/rouge_1.csv", false);
+        FileWriter fw = new FileWriter("./data/evaluation/chinese/rouge_1_ss.csv", false);
         try (BufferedWriter bw = new BufferedWriter(fw)) {
             for (String name : docSetRet.keySet())
                 bw.write(docSetRet.get(name) + "\n");
         }
     }
-    
 }

@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 
-package edu.csupomona.nlp.subsum;
+package edu.cpp.iipl.subsum;
 
-import edu.csupomona.nlp.util.StanfordTools;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,9 +18,10 @@ import java.nio.file.Path;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import edu.cpp.iipl.util.SentenceDetector;
 import suk.code.SubjectiveLogic.MDS.SubSumGenericMDS;
 
 
@@ -37,16 +37,14 @@ public class PrepareEnglishEva {
     
     private boolean isRegPathUpdated = false;   // a protection flag
     
-    private final StanfordTools stan;   // Stanford NLP tools
+    private final SentenceDetector sd;   // Stanford NLP tools
     
     private final Pattern ptnFilename;
     
     private final List<String> folderNames;
     
     public PrepareEnglishEva() {
-        Properties props = new Properties();
-        props.put("annotators", "tokenize, ssplit");
-        stan = new StanfordTools(props);
+        sd = new SentenceDetector("en");
         
         ptnFilename = 
                 Pattern.compile("D([0-9]+)\\.M\\.100\\.[A-Z]\\.([A-Z0-9]+)");
@@ -169,7 +167,7 @@ public class PrepareEnglishEva {
                 // into sentences and reset the paragraph
                 if (line.matches("^[\\s]+.*")) {
                     paragraph = paragraph.replaceAll("[ ]+", " ");
-                    text.addAll(stan.sentence(paragraph));
+                    text.addAll(sd.complex(paragraph));
                     text.add("\n");
                     paragraph = ""; // reset
                 }
@@ -186,7 +184,7 @@ public class PrepareEnglishEva {
         // last paragraph
         if (paragraph.length() > 1) {
             paragraph = paragraph.replaceAll("[ ]+", " ");
-            text.addAll(stan.sentence(paragraph));
+            text.addAll(sd.complex(paragraph));
             text.add("\n");
         }
 

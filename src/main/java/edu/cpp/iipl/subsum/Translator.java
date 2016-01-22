@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 
-package edu.csupomona.nlp.subsum;
+package edu.cpp.iipl.subsum;
 
-import edu.csupomona.nlp.tool.translator.Google;
-import edu.csupomona.nlp.util.StanfordTools;
+import edu.cpp.iipl.tool.translator.Google;
+import edu.cpp.iipl.util.SentenceDetector;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,7 +33,7 @@ public class Translator {
     
     private final Google gt;    // Google Translate API class
     
-    private final StanfordTools stan;   // Stanford NLP tools
+    private final SentenceDetector sd;   // Stanford NLP tools
     
     // essential path info
     private final String PATH_DATA;
@@ -62,7 +63,7 @@ public class Translator {
         String accessKey = readAccessKey();
         gt = new Google(accessKey, source, target);
         
-        stan = new StanfordTools();
+        sd = new SentenceDetector("en");
     }
     
     
@@ -225,7 +226,7 @@ public class Translator {
                 // into sentences and reset the paragraph
                 if (line.matches("^[\\s]+.*")) {
                     paragraph = paragraph.replaceAll("[ ]+", " ");
-                    text.addAll(stan.sentence(paragraph));
+                    text.addAll(sd.complex(paragraph));
                     text.add("\n");
                     paragraph = ""; // reset
                 }
@@ -242,7 +243,7 @@ public class Translator {
         // last paragraph
         if (paragraph.length() > 1) {
             paragraph = paragraph.replaceAll("[ ]+", " ");
-            text.addAll(stan.sentence(paragraph));
+            text.addAll(sd.complex(paragraph));
             text.add("\n");
         }
 

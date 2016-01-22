@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package edu.csupomona.nlp.subsum;
+package edu.cpp.iipl.subsum;
 
 import edu.csupomona.nlp.tool.rouge.EnglishROUGE;
 import edu.csupomona.nlp.tool.rouge.Result;

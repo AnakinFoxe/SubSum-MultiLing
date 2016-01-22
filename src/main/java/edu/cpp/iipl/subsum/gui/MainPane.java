@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package edu.csupomona.nlp.subsum.gui;
+package edu.cpp.iipl.subsum.gui;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,7 +45,7 @@ import suk.code.SubjectiveLogic.MDS.SubSumSpanish;
  */
 public final class MainPane extends GridPane {
     
-    private int percentage_ = 10;
+    private int percentage_ = 30;
     
     private final TextArea taLeft_ = new TextArea();
     private final TextArea taRight_ = new TextArea();
